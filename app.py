@@ -7,7 +7,6 @@ from PIL import ImageDraw, ImageFont
 import logging
 from peft import PeftModel
 
-
 LORA_WEIGHTS = "onstage3890/maya_model_v1_lora"
 
 # Configure device and dtype
@@ -85,7 +84,29 @@ def generate_memes(prompt, text, pipeline, n):
 
 def main():
     st.title("Diffusion Model Image Generator")
+    with st.sidebar:
+        num_images = st.number_input(
+            'Number of Images', 
+            min_value=0, 
+            max_value=10, value=10, step=1)
+        prompt = st.text_area("Text-to-Image Prompt")
+        text = st.text_area("Text to Display")
+        generate = st.button("Generate Images")
 
-    st.number_input("Enter a value", min_value=0, max_value=100, value=10, step=1)
+    if generate:
+        if not prompt:
+            st.error("Please enter a prompt.")
+        elif not text:
+            st.error("Please enter a text.")
+        else:
+            with st.spinner("Generating images..."):
+                pipeline = load_model()
+                images=generate_memes(prompt, text, pipeline, num_images)
+                st.subheader("Generated images")
+                for im in images:
+                    st.image(im)
+                    
+            st.text(f"{num_images} Images with prompt {prompt} and text {text}")
+    
 if __name__ == "__main__":
     main()
