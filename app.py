@@ -40,7 +40,7 @@ def load_model():
             adapter_name="maya_adapter"
         )
         
-        # Optimize pipeline
+        # Optimizing pipeline
         pipeline.to(device)
         if device == "cuda":
             pipeline.enable_model_cpu_offload()
